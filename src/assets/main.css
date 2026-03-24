@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-neutral-950 font-sans text-neutral-100 antialiased;
+    background-image:
+      radial-gradient(circle at top, rgba(212, 175, 55, 0.15), transparent 28%),
+      linear-gradient(180deg, #050505 0%, #111111 100%);
+  }
+
+  ::selection {
+    @apply bg-accent/30 text-white;
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .section-shell {
+    @apply rounded-3xl border border-white/10 bg-white/5 shadow-soft backdrop-blur;
+  }
+
+  .section-title {
+    @apply text-3xl font-semibold tracking-tight text-white md:text-4xl;
+  }
+
+  .section-copy {
+    @apply text-base leading-7 text-neutral-300 md:text-lg;
+  }
+
+  .pill-label {
+    @apply inline-flex items-center rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-accent;
+  }
+
+  .primary-button {
+    @apply inline-flex items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-neutral-950 transition duration-200 hover:bg-accent hover:text-neutral-950;
+  }
+
+  .secondary-button {
+    @apply inline-flex items-center justify-center rounded-full border border-white/15 px-5 py-3 text-sm font-semibold text-white transition duration-200 hover:border-accent hover:text-accent;
+  }
+
+  .card-grid {
+    @apply grid gap-6 md:grid-cols-2 xl:grid-cols-3;
+  }
+}
