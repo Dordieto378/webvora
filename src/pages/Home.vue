@@ -1,200 +1,256 @@
 <script setup>
-const services = [
-  {
-    title: 'Business Websites',
-    description:
-      'Professional websites for service businesses that need trust, clarity, and conversion-focused pages.',
-  },
-  {
-    title: 'Webshops',
-    description:
-      'Online stores with product structure, payments, and mobile-first experiences that feel polished.',
-  },
-  {
-    title: 'Web Apps',
-    description:
-      'Custom tools, dashboards, and portals built around the way a business actually operates.',
-  },
-  {
-    title: 'Hosting & Support',
-    description:
-      'Deployment, updates, backups, and technical support so clients do not need to manage the stack alone.',
-  },
-]
+import { onMounted } from 'vue'
 
-const projects = [
-  {
-    name: 'Northline Studio',
-    type: 'Concept Project',
-    summary: 'Brand-led business website for a creative studio with case studies and lead capture.',
-  },
-  {
-    name: 'Fuel House Gym',
-    type: 'Demo Project',
-    summary: 'Conversion-focused fitness site with pricing blocks, class information, and membership CTA.',
-  },
-  {
-    name: 'Meridian Supply',
-    type: 'Personal Project',
-    summary: 'B2B webshop concept with product filtering, quote requests, and clean admin flows.',
-  },
-]
+onMounted(() => {
+  if ('scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'manual'
+  }
 
-const pricing = [
-  {
-    name: 'Starter Website',
-    build: 'Starting from €900',
-    support: 'Optional care plan from €79/month',
-  },
-  {
-    name: 'Business Website',
-    build: 'Starting from €1,800',
-    support: 'Maintenance from €129/month',
-  },
-  {
-    name: 'Webshop or Web App',
-    build: 'Starting from €2,500',
-    support: 'Custom support and hosting plans',
-  },
-]
+  if (window.location.hash) {
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`)
+  }
+
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+})
 </script>
 
 <template>
-  <div class="space-y-8 lg:space-y-10">
-    <section class="section-shell overflow-hidden px-6 py-12 lg:px-10 lg:py-16">
-      <div class="grid gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-        <div class="space-y-8">
-          <span class="pill-label">Websites, webshops, web apps</span>
-          <div class="space-y-5">
-            <h1 class="max-w-4xl text-4xl font-semibold tracking-tight text-white md:text-6xl">
-              Custom websites for businesses that want more than a template.
-            </h1>
-            <p class="max-w-2xl text-lg leading-8 text-neutral-300 md:text-xl">
-              I design, build, host, and maintain modern digital products for businesses that
-              need a reliable web presence and a clear technical partner.
+  <div id="top" class="landing">
+    <section class="hero">
+      <div class="shell shell--full topbar">
+        <div class="topbar__right">
+          <span class="pill"><i />Closed now</span>
+          <a href="tel:0851302368">085 130 23 68</a>
+          <a href="mailto:hello@webvora.com">hello@webvora.com</a>
+        </div>
+      </div>
+
+      <div class="shell shell--full nav">
+        <button class="menu" type="button" aria-label="Open menu">
+          <span />
+          <span />
+          <span />
+        </button>
+        <a href="#top" class="logo">
+          <b class="logo__badge">W</b>
+          <strong>Webvora</strong>
+        </a>
+        <a href="#contact" class="nav__cta">
+          Contact us
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 5h14v10H8l-3 3V5Zm2 2v6.17L8.17 12H17V7H7Z" fill="currentColor" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="shell shell--full hero__body">
+        <p class="eyebrow">We build digital products for ambitious businesses</p>
+        <h1>
+          Online growth starts with
+          <span>technical confidence</span>
+        </h1>
+        <p class="lead">
+          Webvora is a web development studio focused on business websites, online stores, and
+          custom web applications.
+        </p>
+        <a class="scroll" href="#workflow" aria-label="Scroll to next section">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M11 5h2v9.17l3.59-3.58L18 12l-6 6-6-6 1.41-1.41L11 14.17V5Z"
+              fill="currentColor"
+            />
+          </svg>
+        </a>
+
+      </div>
+    </section>
+
+    <section id="workflow" class="workflow">
+      <div class="shell workflow__card">
+        <div>
+          <h2 class="dark">Our <span>approach</span></h2>
+          <p>
+            When you work with Webvora, you work with specialists who value clear communication,
+            fast execution, and long-term collaboration. Not just a delivery partner, but a team
+            that thinks ahead and stays involved.
+          </p>
+          <a href="#contact" class="btn btn--solid">Get in touch</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="growth">
+      <div class="shell stack">
+        <div class="split">
+          <div>
+            <h2>Focused on <span>development</span></h2>
+            <p>
+              Webvora builds websites, e-commerce platforms, and tailored web applications. When
+              you need strategic or technical guidance around an existing product, we can support
+              that as well.
+            </p>
+            <a href="#contact" class="btn">Get in touch</a>
+          </div>
+        </div>
+
+        <div class="contact-band">
+          <div class="contact-band__intro">
+            <h2>Curious what we can <span>build for you</span>?</h2>
+            <a href="#contact" class="btn btn--contact">Get in touch</a>
+          </div>
+
+          <div class="mini-card">
+            <div class="mini-card__contact">
+              <p>Contact us directly</p>
+              <a href="#contact">Schedule a call</a>
+              <a href="mailto:hello@webvora.com">hello@webvora.com</a>
+              <a href="tel:0851302368">085 130 23 68</a>
+              <span class="pill pill--lg"><i />Closed now</span>
+            </div>
+            <div class="mini-card__message">
+              <h3>Webvora</h3>
+              <p>Have a question or want to get acquainted? Give us a call or send a message.</p>
+            </div>
+            <span class="brand-mark brand-mark--contact" aria-hidden="true">W</span>
+          </div>
+        </div>
+
+        <div class="skills">
+          <h2>What we are <span>good at</span></h2>
+          <div class="skills__grid">
+            <article class="skill skill--hero">
+              <h3>Business websites</h3>
+              <p>Polished websites that support visibility, trust, and conversion.</p>
+            </article>
+            <article class="skill">
+              <h3>E-commerce</h3>
+              <p>We build online stores that balance conversion, structure, and ease of use.</p>
+            </article>
+            <article class="skill">
+              <h3>Web applications</h3>
+              <p>Secure, scalable apps built around the way your team actually works.</p>
+            </article>
+            <article class="skill">
+              <h3>Continuous improvement</h3>
+              <p>We keep refining live platforms with focused iterations and measurable goals.</p>
+            </article>
+            <article class="skill">
+              <h3>Hosting and maintenance</h3>
+              <p>Reliable hosting and support keep your platform stable, secure, and available.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="plans">
+          <div class="plans__headline">
+            <h2>How we <span>work together</span> on continuous growth</h2>
+          </div>
+
+          <div class="plans__copy">
+            <p>
+              We make a clear distinction between our SLA and our monthly development plan. The
+              SLA focuses on stability, security, and fast support. Ongoing development is aimed at
+              continuous improvement, innovation, and growth.
             </p>
           </div>
-          <div class="flex flex-col gap-3 sm:flex-row">
-            <router-link to="/services" class="primary-button">View Services</router-link>
-            <router-link to="/contact" class="secondary-button">Request a Quote</router-link>
+
+          <article class="plan plan--primary">
+            <div class="plan__top">
+              <p class="plan__price">from 500,- <span>SLA fee per month.</span></p>
+            </div>
+            <h3>Service level agreement (SLA)</h3>
+            <p class="plan__lead">
+              Our SLA gives you clear service guarantees. Because a website often plays a critical
+              role in daily operations, we provide fast support and continuous monitoring.
+            </p>
+            <ul>
+              <li>Same-day response for critical issues</li>
+              <li>Direct action on security issues during office hours</li>
+              <li>24/7 emergency service</li>
+              <li>Support for questions and non-critical issues during office hours</li>
+              <li>Continuous uptime monitoring</li>
+              <li>Weekly updates and maintenance</li>
+            </ul>
+          </article>
+
+          <article class="plan plan--secondary">
+            <div class="plan__top">
+              <p class="plan__price">from 4.000,- <span>Development per month.</span></p>
+            </div>
+            <h3>Monthly development</h3>
+            <p class="plan__lead">
+              Monthly development gives you faster execution, reserved capacity, and proactive
+              thinking. As your development partner, we keep improving your platform in a
+              structured way.
+            </p>
+            <ul>
+              <li>Fast and structured execution of tasks</li>
+              <li>Scrum-style standups for prioritization and new work</li>
+              <li>Reserved monthly capacity</li>
+              <li>Dedicated contact person and specialist team</li>
+              <li>Monthly reporting and transparent time tracking</li>
+              <li>Proactive thinking around new opportunities</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <footer id="contact" class="footer">
+      <div class="shell footer__grid">
+        <div class="footer__main">
+          <a href="#top" class="logo logo--foot">
+            <b class="logo__badge">W</b>
+            <strong>Webvora</strong>
+          </a>
+
+          <div class="col">
+            <h3>Our vision</h3>
+            <p>Online growth starts with technical confidence</p>
+          </div>
+
+          <div class="col">
+            <h3>Visit us</h3>
+            <p>Agro Business Park 22</p>
+            <p>6708 PW Wageningen</p>
+            <h3>Opening hours</h3>
+            <p>Mon - Fri 09:00 to 17:00</p>
+          </div>
+
+          <div class="col">
+            <h3>Expertise</h3>
+            <a href="#services">Websites</a>
+            <a href="#services">Online stores</a>
+            <a href="#services">Web apps</a>
+            <a href="#services">Consulting</a>
+            <a href="#services">Maintenance</a>
+            <a href="#services">Hosting</a>
           </div>
         </div>
 
-        <div class="section-shell relative border-white/10 bg-white/5 p-6">
-          <div class="absolute inset-0 bg-grid bg-[size:28px_28px] opacity-20" />
-          <div class="relative space-y-6">
-            <div class="flex items-center justify-between border-b border-white/10 pb-4">
-              <p class="text-sm font-medium uppercase tracking-[0.24em] text-neutral-400">
-                What clients get
-              </p>
-              <span class="rounded-full border border-accent/40 px-3 py-1 text-xs text-accent">
-                End-to-end
-              </span>
-            </div>
-            <div class="grid gap-4">
-              <div class="rounded-2xl border border-white/10 bg-neutral-950/70 p-4">
-                <p class="text-sm text-neutral-400">Build</p>
-                <p class="mt-1 text-lg font-semibold text-white">
-                  Strategy, design, development, launch
-                </p>
-              </div>
-              <div class="rounded-2xl border border-white/10 bg-neutral-950/70 p-4">
-                <p class="text-sm text-neutral-400">Technical</p>
-                <p class="mt-1 text-lg font-semibold text-white">
-                  Hosting, deployment, domains, SSL, backups
-                </p>
-              </div>
-              <div class="rounded-2xl border border-white/10 bg-neutral-950/70 p-4">
-                <p class="text-sm text-neutral-400">Support</p>
-                <p class="mt-1 text-lg font-semibold text-white">
-                  Maintenance, updates, content edits, improvements
-                </p>
-              </div>
-            </div>
+        <aside class="footer__card">
+          <div>
+            <h3>Contact Webvora</h3>
+            <a href="#contact">Schedule a call</a>
+            <a href="mailto:hello@webvora.com">hello@webvora.com</a>
+            <a href="tel:0851302368">085 130 23 68</a>
+            <span class="pill pill--lg"><i />Closed now</span>
           </div>
+          <span class="brand-mark brand-mark--footer" aria-hidden="true">W</span>
+        </aside>
+      </div>
+
+      <div class="shell footer__bottom">
+        <div class="socials">
+          <a href="https://www.facebook.com" aria-label="Facebook">f</a>
+          <a href="https://www.linkedin.com" aria-label="LinkedIn">in</a>
+        </div>
+        <div class="legal">
+          <a href="#contact">Privacy</a>
+          <a href="#contact">Terms and conditions</a>
         </div>
       </div>
-    </section>
-
-    <section class="section-shell px-6 py-10 lg:px-10">
-      <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div class="space-y-3">
-          <span class="pill-label">Services</span>
-          <h2 class="section-title">Everything needed to launch and keep a site running.</h2>
-        </div>
-        <router-link to="/services" class="secondary-button">See all services</router-link>
-      </div>
-
-      <div class="card-grid">
-        <article
-          v-for="service in services"
-          :key="service.title"
-          class="rounded-3xl border border-white/10 bg-neutral-950/70 p-6"
-        >
-          <h3 class="text-xl font-semibold text-white">{{ service.title }}</h3>
-          <p class="mt-4 text-sm leading-7 text-neutral-400">{{ service.description }}</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section-shell px-6 py-10 lg:px-10">
-      <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div class="space-y-3">
-          <span class="pill-label">Portfolio</span>
-          <h2 class="section-title">Selected work that shows the range of projects.</h2>
-        </div>
-        <router-link to="/portfolio" class="secondary-button">View portfolio</router-link>
-      </div>
-
-      <div class="card-grid">
-        <article
-          v-for="project in projects"
-          :key="project.name"
-          class="rounded-3xl border border-white/10 bg-white/5 p-6"
-        >
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-accent">{{ project.type }}</p>
-          <h3 class="mt-4 text-xl font-semibold text-white">{{ project.name }}</h3>
-          <p class="mt-4 text-sm leading-7 text-neutral-400">{{ project.summary }}</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section-shell px-6 py-10 lg:px-10">
-      <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div class="space-y-3">
-          <span class="pill-label">Pricing</span>
-          <h2 class="section-title">Clear starting points for builds and monthly support.</h2>
-        </div>
-        <router-link to="/pricing" class="secondary-button">Explore pricing</router-link>
-      </div>
-
-      <div class="grid gap-6 lg:grid-cols-3">
-        <article
-          v-for="item in pricing"
-          :key="item.name"
-          class="rounded-3xl border border-white/10 bg-neutral-950/70 p-6"
-        >
-          <h3 class="text-xl font-semibold text-white">{{ item.name }}</h3>
-          <p class="mt-5 text-sm uppercase tracking-[0.18em] text-neutral-500">Build</p>
-          <p class="mt-2 text-2xl font-semibold text-white">{{ item.build }}</p>
-          <p class="mt-5 text-sm uppercase tracking-[0.18em] text-neutral-500">Support</p>
-          <p class="mt-2 text-sm leading-7 text-neutral-400">{{ item.support }}</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section-shell px-6 py-10 lg:px-10">
-      <div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-        <div class="space-y-4">
-          <span class="pill-label">Contact</span>
-          <h2 class="section-title">Need a website, webshop, or support plan?</h2>
-          <p class="section-copy max-w-2xl">
-            Let’s define the right scope, the right stack, and a realistic budget for your
-            business.
-          </p>
-        </div>
-        <router-link to="/contact" class="primary-button">Start a Project</router-link>
-      </div>
-    </section>
+    </footer>
   </div>
 </template>
+
