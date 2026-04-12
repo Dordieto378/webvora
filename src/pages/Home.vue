@@ -219,7 +219,7 @@ onMounted(() => {
 
           <article class="plan plan--tertiary">
             <div class="plan__top">
-              <p class="plan__price">$30/month <span>Maintenance and hosting</span></p>
+              <p class="plan__price">from $30/month <span>Maintenance and hosting</span></p>
             </div>
             <h3>Monthly Maintenance + Hosting</h3>
             <p class="plan__lead">
