@@ -498,6 +498,19 @@
   border: 1px solid var(--line);
 }
 
+.skill__art {
+  width: calc(100% + 18px);
+  margin: -6px -6px 22px;
+  padding: 14px 10px 0;
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(28, 167, 102, 0.06));
+}
+
+.skill__art svg {
+  width: 100%;
+  height: auto;
+}
+
 .skill h3,
 .plan h3,
 .col h3,
@@ -521,28 +534,36 @@
 }
 
 .plans {
-  grid-template-columns: minmax(340px, 1fr) minmax(340px, 1fr);
-  gap: 28px 26px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 12px;
   padding-bottom: 84px;
+}
+
+.plans__headline {
+  grid-column: 1 / 3;
+}
+
+.plans__copy {
+  grid-column: 3 / 4;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .plans__headline h2,
 .plans__copy p {
-  max-width: 560px;
+  max-width: 100%;
 }
 
 .plans__headline h2 {
   font-size: clamp(2.8rem, 4.2vw, 4.9rem);
   line-height: 1.08;
-  letter-spacing: -0.055em;
-}
-
-.plans__copy {
-  display: flex;
-  justify-content: flex-end;
+  letter-spacing: -0.025em;
+  word-spacing: 0.06em;
+  max-width: none;
 }
 
 .plans__copy p {
+  max-width: 460px;
   font-size: 17px;
   line-height: 1.85;
   color: var(--text);
@@ -550,7 +571,7 @@
 
 .plan {
   position: relative;
-  min-height: 480px;
+  min-height: 420px;
   padding: 42px 54px 38px;
   color: #fff;
 }
@@ -561,6 +582,10 @@
 
 .plan--secondary {
   background: var(--green-deep);
+}
+
+.plan--tertiary {
+  background: #1b8f57;
 }
 
 .plan__top {
@@ -602,8 +627,8 @@
 
 .plan ul {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px 28px;
+  grid-template-columns: 1fr;
+  gap: 14px;
   margin: 26px 0 0;
   padding: 0;
   list-style: none;
@@ -628,6 +653,16 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.35);
+}
+
+.plan__note {
+  margin: 0;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .footer {
@@ -760,6 +795,11 @@
 
   .plans__copy {
     justify-content: flex-start;
+  }
+
+  .plans__headline,
+  .plans__copy {
+    grid-column: auto;
   }
 
   .footer__main {

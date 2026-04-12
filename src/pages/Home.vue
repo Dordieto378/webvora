@@ -119,6 +119,26 @@ onMounted(() => {
           <h2>What we are <span>good at</span></h2>
           <div class="skills__grid">
             <article class="skill skill--hero">
+              <div class="skill__art" aria-hidden="true">
+                <svg viewBox="0 0 420 260">
+                  <defs>
+                    <linearGradient id="screenGlow" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.92" />
+                      <stop offset="100%" stop-color="#d8f3e4" stop-opacity="0.88" />
+                    </linearGradient>
+                  </defs>
+                  <rect x="58" y="26" width="304" height="186" rx="18" fill="#ffffff" fill-opacity="0.78" />
+                  <rect x="74" y="42" width="272" height="154" rx="12" fill="url(#screenGlow)" />
+                  <rect x="95" y="63" width="94" height="12" rx="6" fill="#1ca766" fill-opacity="0.85" />
+                  <rect x="95" y="91" width="168" height="10" rx="5" fill="#7ccfa1" fill-opacity="0.9" />
+                  <rect x="95" y="111" width="226" height="10" rx="5" fill="#7ccfa1" fill-opacity="0.72" />
+                  <rect x="95" y="140" width="78" height="34" rx="10" fill="#1ca766" fill-opacity="0.18" />
+                  <rect x="184" y="140" width="78" height="34" rx="10" fill="#1ca766" fill-opacity="0.18" />
+                  <rect x="273" y="140" width="48" height="34" rx="10" fill="#1ca766" fill-opacity="0.18" />
+                  <path d="M196 212h28v18h34v10H162v-10h34v-18Z" fill="#ffffff" fill-opacity="0.82" />
+                  <ellipse cx="210" cy="244" rx="84" ry="10" fill="#1ca766" fill-opacity="0.12" />
+                </svg>
+              </div>
               <h3>Business websites</h3>
               <p>Polished websites that support visibility, trust, and conversion.</p>
             </article>
@@ -143,55 +163,77 @@ onMounted(() => {
 
         <div class="plans">
           <div class="plans__headline">
-            <h2>How we <span>work together</span> on continuous growth</h2>
+            <h2>Pricing and <span>project requirements</span></h2>
           </div>
 
           <div class="plans__copy">
             <p>
-              We make a clear distinction between our SLA and our monthly development plan. The
-              SLA focuses on stability, security, and fast support. Ongoing development is aimed at
-              continuous improvement, innovation, and growth.
+              Clear starting prices for websites, web apps, and monthly support. Final pricing may
+              increase when scope, complexity, integrations, or custom functionality go beyond the
+              standard setup.
             </p>
           </div>
 
           <article class="plan plan--primary">
             <div class="plan__top">
-              <p class="plan__price">from 500,- <span>SLA fee per month.</span></p>
+              <p class="plan__price">from $300 <span>Website projects</span></p>
             </div>
-            <h3>Service level agreement (SLA)</h3>
+            <h3>Websites</h3>
             <p class="plan__lead">
-              Our SLA gives you clear service guarantees. Because a website often plays a critical
-              role in daily operations, we provide fast support and continuous monitoring.
+              Best suited for brochure sites, landing pages, and small business websites with a
+              clear structure and client-provided design direction.
             </p>
             <ul>
-              <li>Same-day response for critical issues</li>
-              <li>Direct action on security issues during office hours</li>
-              <li>24/7 emergency service</li>
-              <li>Support for questions and non-critical issues during office hours</li>
-              <li>Continuous uptime monitoring</li>
-              <li>Weekly updates and maintenance</li>
+              <li>1 to 3 pages: $300</li>
+              <li>4 to 8 pages: $650</li>
+              <li>8 to 12 pages: $1,000</li>
             </ul>
+            <p class="plan__note">
+              Client must provide a design file or clear visual references before the project can
+              begin.
+            </p>
           </article>
 
           <article class="plan plan--secondary">
             <div class="plan__top">
-              <p class="plan__price">from 4.000,- <span>Development per month.</span></p>
+              <p class="plan__price">from $1,300 <span>Custom app projects</span></p>
             </div>
-            <h3>Monthly development</h3>
+            <h3>Web Apps</h3>
             <p class="plan__lead">
-              Monthly development gives you faster execution, reserved capacity, and proactive
-              thinking. As your development partner, we keep improving your platform in a
-              structured way.
+              A solid starting scope for simple internal tools, lightweight client portals, or
+              business workflows that require custom data management.
             </p>
             <ul>
-              <li>Fast and structured execution of tasks</li>
-              <li>Scrum-style standups for prioritization and new work</li>
-              <li>Reserved monthly capacity</li>
-              <li>Dedicated contact person and specialist team</li>
-              <li>Monthly reporting and transparent time tracking</li>
-              <li>Proactive thinking around new opportunities</li>
+              <li>1 to 3 pages</li>
+              <li>Create, edit, delete, and view data</li>
+              <li>Basic database setup</li>
+              <li>Simple dashboard interface</li>
+              <li>Deployment included</li>
+              <li>Advanced features are quoted separately</li>
+            </ul>
+            <p class="plan__note">
+              Client must provide a design file or clear visual references before the project can
+              begin.
+            </p>
+          </article>
+
+          <article class="plan plan--tertiary">
+            <div class="plan__top">
+              <p class="plan__price">$30/month <span>Maintenance and hosting</span></p>
+            </div>
+            <h3>Monthly Maintenance + Hosting</h3>
+            <p class="plan__lead">
+              Ongoing support for websites and lightweight applications. Pricing can increase if
+              storage, traffic, or platform usage grows over time.
+            </p>
+            <ul>
+              <li>Secure hosting environment</li>
+              <li>Routine updates and maintenance</li>
+              <li>Basic uptime oversight</li>
+              <li>Monthly pricing scales with usage</li>
             </ul>
           </article>
+
         </div>
       </div>
     </section>
@@ -210,9 +252,6 @@ onMounted(() => {
           </div>
 
           <div class="col">
-            <h3>Visit us</h3>
-            <p>Agro Business Park 22</p>
-            <p>6708 PW Wageningen</p>
             <h3>Opening hours</h3>
             <p>Mon - Fri 09:00 to 17:00</p>
           </div>
