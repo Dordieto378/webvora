@@ -1,5 +1,21 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+
+const landingReady = ref(false)
+let revealObserver
+
+const showElement = (element) => {
+  if (!element) {
+    return
+  }
+
+  const delay = Number.parseInt(element.dataset.revealDelay ?? '0', 10)
+  const safeDelay = Number.isNaN(delay) ? 0 : delay
+
+  window.setTimeout(() => {
+    element.classList.add('is-visible')
+  }, safeDelay)
+}
 
 onMounted(() => {
   if ('scrollRestoration' in window.history) {
@@ -11,31 +27,74 @@ onMounted(() => {
   }
 
   window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+
+  landingReady.value = true
+
+  const revealItems = Array.from(document.querySelectorAll('[data-reveal]'))
+
+  if (!revealItems.length) {
+    return
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    revealItems.forEach((element) => element.classList.add('is-visible'))
+    return
+  }
+
+  const loadRevealItems = revealItems.filter((element) => element.dataset.revealOnLoad === 'true')
+  const scrollRevealItems = revealItems.filter((element) => element.dataset.revealOnLoad !== 'true')
+
+  requestAnimationFrame(() => {
+    loadRevealItems.forEach((element) => showElement(element))
+  })
+
+  revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return
+        }
+
+        showElement(entry.target)
+        revealObserver?.unobserve(entry.target)
+      })
+    },
+    {
+      threshold: 0.18,
+      rootMargin: '0px 0px -12% 0px',
+    },
+  )
+
+  scrollRevealItems.forEach((element) => revealObserver?.observe(element))
+})
+
+onBeforeUnmount(() => {
+  revealObserver?.disconnect()
 })
 </script>
 
 <template>
-  <div id="top" class="landing">
+  <div id="top" :class="['landing', { 'landing--ready': landingReady }]">
     <section class="hero">
       <div class="shell shell--full topbar">
-        <div class="topbar__right">
-          <span class="pill"><i />Closed now</span>
-          <a href="tel:0851302368">085 130 23 68</a>
-          <a href="mailto:hello@webvora.com">hello@webvora.com</a>
+        <div class="topbar__right" data-reveal="down" data-reveal-on-load="true">
+          <span class="pill" data-reveal="down" data-reveal-delay="40" data-reveal-on-load="true"><i />Closed now</span>
+          <a href="tel:0851302368" data-reveal="down" data-reveal-delay="90" data-reveal-on-load="true">085 130 23 68</a>
+          <a href="mailto:hello@webvora.com" data-reveal="down" data-reveal-delay="140" data-reveal-on-load="true">hello@webvora.com</a>
         </div>
       </div>
 
       <div class="shell shell--full nav">
-        <button class="menu" type="button" aria-label="Open menu">
+        <button class="menu" type="button" aria-label="Open menu" data-reveal="left" data-reveal-delay="60" data-reveal-on-load="true">
           <span />
           <span />
           <span />
         </button>
-        <a href="#top" class="logo">
+        <a href="#top" class="logo" data-reveal="down" data-reveal-delay="120" data-reveal-on-load="true">
           <b class="logo__badge">W</b>
           <strong>Webvora</strong>
         </a>
-        <a href="#contact" class="nav__cta">
+        <a href="#contact" class="nav__cta" data-reveal="right" data-reveal-delay="180" data-reveal-on-load="true">
           Contact us
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M5 5h14v10H8l-3 3V5Zm2 2v6.17L8.17 12H17V7H7Z" fill="currentColor" />
@@ -44,16 +103,16 @@ onMounted(() => {
       </div>
 
       <div class="shell shell--full hero__body">
-        <p class="eyebrow">We build digital products for ambitious businesses</p>
-        <h1>
+        <p class="eyebrow" data-reveal="up" data-reveal-delay="140" data-reveal-on-load="true">We build digital products for ambitious businesses</p>
+        <h1 data-reveal="up" data-reveal-delay="220" data-reveal-on-load="true">
           Online growth starts with
           <span>technical confidence</span>
         </h1>
-        <p class="lead">
+        <p class="lead" data-reveal="up" data-reveal-delay="320" data-reveal-on-load="true">
           Webvora is a web development studio focused on business websites, online stores, and
           custom web applications.
         </p>
-        <a class="scroll" href="#workflow" aria-label="Scroll to next section">
+        <a class="scroll" href="#workflow" aria-label="Scroll to next section" data-reveal="up" data-reveal-delay="420" data-reveal-on-load="true">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path
               d="M11 5h2v9.17l3.59-3.58L18 12l-6 6-6-6 1.41-1.41L11 14.17V5Z"
@@ -66,8 +125,8 @@ onMounted(() => {
     </section>
 
     <section id="workflow" class="workflow">
-      <div class="shell workflow__card">
-        <div>
+      <div class="shell workflow__card" data-reveal="up">
+        <div data-reveal="up" data-reveal-delay="80">
           <h2 class="dark">Our <span>approach</span></h2>
           <p>
             When you work with Webvora, you work with specialists who value clear communication,
@@ -82,7 +141,7 @@ onMounted(() => {
     <section id="services" class="growth">
       <div class="shell stack">
         <div class="split">
-          <div>
+          <div data-reveal="up">
             <h2>Focused on <span>development</span></h2>
             <p>
               Webvora builds websites, e-commerce platforms, and tailored web applications. When
@@ -94,12 +153,12 @@ onMounted(() => {
         </div>
 
         <div class="contact-band">
-          <div class="contact-band__intro">
+          <div class="contact-band__intro" data-reveal="left">
             <h2>Curious what we can <span>build for you</span>?</h2>
             <a href="#contact" class="btn btn--contact">Get in touch</a>
           </div>
 
-          <div class="mini-card">
+          <div class="mini-card" data-reveal="right" data-reveal-delay="80">
             <div class="mini-card__contact">
               <p>Contact us directly</p>
               <a href="#contact">Schedule a call</a>
@@ -116,9 +175,9 @@ onMounted(() => {
         </div>
 
         <div class="skills">
-          <h2>What we are <span>good at</span></h2>
+          <h2 data-reveal="up">What we are <span>good at</span></h2>
           <div class="skills__grid">
-            <article class="skill skill--hero">
+            <article class="skill skill--hero" data-reveal="left">
               <div class="skill__art" aria-hidden="true">
                 <svg viewBox="0 0 420 260">
                   <defs>
@@ -142,19 +201,19 @@ onMounted(() => {
               <h3>Business websites</h3>
               <p>Polished websites that support visibility, trust, and conversion.</p>
             </article>
-            <article class="skill">
+            <article class="skill" data-reveal="up" data-reveal-delay="60">
               <h3>E-commerce</h3>
               <p>We build online stores that balance conversion, structure, and ease of use.</p>
             </article>
-            <article class="skill">
+            <article class="skill" data-reveal="up" data-reveal-delay="120">
               <h3>Web applications</h3>
               <p>Secure, scalable apps built around the way your team actually works.</p>
             </article>
-            <article class="skill">
+            <article class="skill" data-reveal="up" data-reveal-delay="180">
               <h3>Continuous improvement</h3>
               <p>We keep refining live platforms with focused iterations and measurable goals.</p>
             </article>
-            <article class="skill">
+            <article class="skill" data-reveal="up" data-reveal-delay="240">
               <h3>Hosting and maintenance</h3>
               <p>Reliable hosting and support keep your platform stable, secure, and available.</p>
             </article>
@@ -162,11 +221,11 @@ onMounted(() => {
         </div>
 
         <div class="plans">
-          <div class="plans__headline">
+          <div class="plans__headline" data-reveal="left">
             <h2>Pricing and <span>project requirements</span></h2>
           </div>
 
-          <div class="plans__copy">
+          <div class="plans__copy" data-reveal="right" data-reveal-delay="80">
             <p>
               Clear starting prices for websites, web apps, and monthly support. Final pricing may
               increase when scope, complexity, integrations, or custom functionality go beyond the
@@ -174,7 +233,7 @@ onMounted(() => {
             </p>
           </div>
 
-          <article class="plan plan--primary">
+          <article class="plan plan--primary" data-reveal="up">
             <div class="plan__top">
               <p class="plan__price">from $300 <span>Website projects</span></p>
             </div>
@@ -194,7 +253,7 @@ onMounted(() => {
             </p>
           </article>
 
-          <article class="plan plan--secondary">
+          <article class="plan plan--secondary" data-reveal="up" data-reveal-delay="100">
             <div class="plan__top">
               <p class="plan__price">from $1,300 <span>Custom app projects</span></p>
             </div>
@@ -217,7 +276,7 @@ onMounted(() => {
             </p>
           </article>
 
-          <article class="plan plan--tertiary">
+          <article class="plan plan--tertiary" data-reveal="up" data-reveal-delay="180">
             <div class="plan__top">
               <p class="plan__price">from $30/month <span>Maintenance and hosting</span></p>
             </div>
@@ -240,7 +299,7 @@ onMounted(() => {
 
     <footer id="contact" class="footer">
       <div class="shell footer__grid">
-        <div class="footer__main">
+        <div class="footer__main" data-reveal="left">
           <a href="#top" class="logo logo--foot">
             <b class="logo__badge">W</b>
             <strong>Webvora</strong>
@@ -267,7 +326,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <aside class="footer__card">
+        <aside class="footer__card" data-reveal="right" data-reveal-delay="100">
           <div>
             <h3>Contact Webvora</h3>
             <a href="#contact">Schedule a call</a>
@@ -279,7 +338,7 @@ onMounted(() => {
         </aside>
       </div>
 
-      <div class="shell footer__bottom">
+      <div class="shell footer__bottom" data-reveal="up">
         <div class="socials">
           <a href="https://www.facebook.com" aria-label="Facebook">f</a>
           <a href="https://www.linkedin.com" aria-label="LinkedIn">in</a>
