@@ -255,7 +255,7 @@ onBeforeUnmount(() => {
 
           <article class="plan plan--secondary" data-reveal="up" data-reveal-delay="100">
             <div class="plan__top">
-              <p class="plan__price">from $1,300 <span>Custom app projects</span></p>
+              <p class="plan__price">from $1,500 <span>Custom app projects</span></p>
             </div>
             <h3>Web Apps</h3>
             <p class="plan__lead">
@@ -264,6 +264,7 @@ onBeforeUnmount(() => {
             </p>
             <ul>
               <li>1 to 3 pages</li>
+              <li>Login / register function</li>
               <li>Create, edit, delete, and view data</li>
               <li>Basic database setup</li>
               <li>Simple dashboard interface</li>
