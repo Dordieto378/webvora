@@ -86,12 +86,9 @@ onBeforeUnmount(() => {
 
       <div class="shell shell--full nav">
         <button class="menu" type="button" aria-label="Open menu" data-reveal="left" data-reveal-delay="60" data-reveal-on-load="true">
-          <span />
-          <span />
-          <span />
+          <b class="menu__mark" aria-hidden="true">W</b>
         </button>
         <a href="#top" class="logo" data-reveal="down" data-reveal-delay="120" data-reveal-on-load="true">
-          <b class="logo__badge">W</b>
           <strong>Webvora</strong>
         </a>
         <a href="#contact" class="nav__cta" data-reveal="right" data-reveal-delay="180" data-reveal-on-load="true">
@@ -352,4 +349,3 @@ onBeforeUnmount(() => {
     </footer>
   </div>
 </template>
-
