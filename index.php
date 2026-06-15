@@ -14,9 +14,17 @@ function devServerAvailable(string $host, int $port): bool
         return false;
     }
 
+    fwrite($socket, "GET /@vite/client HTTP/1.1\r\nHost: {$host}:{$port}\r\nConnection: close\r\n\r\n");
+
+    $response = stream_get_contents($socket, 2048);
     fclose($socket);
 
-    return true;
+    if ($response === false) {
+        return false;
+    }
+
+    return str_contains($response, 'Content-Type: text/javascript')
+        || str_contains($response, 'Content-Type: application/javascript');
 }
 
 function serveDevIndex(string $sourceIndex, string $devOrigin): void

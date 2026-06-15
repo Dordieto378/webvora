@@ -1,74 +1,237 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const landingReady = ref(false)
+const amsterdamNow = ref(new Date())
 let revealObserver
+let scrollFrame = 0
+let clockTimer = 0
+const revealTimers = new Set()
 
-const showElement = (element) => {
-  if (!element) {
+const businessHours = {
+  days: new Set(['Mon', 'Tue', 'Wed', 'Thu', 'Fri']),
+  openHour: 9,
+  closeHour: 17,
+}
+
+const amsterdamFormatter = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Europe/Amsterdam',
+  weekday: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
+  timeZoneName: 'short',
+})
+
+const getAmsterdamParts = () =>
+  Object.fromEntries(
+    amsterdamFormatter
+      .formatToParts(amsterdamNow.value)
+      .filter((part) => part.type !== 'literal')
+      .map((part) => [part.type, part.value]),
+  )
+
+const amsterdamStatus = computed(() => {
+  const parts = getAmsterdamParts()
+  const hour = Number.parseInt(parts.hour ?? '0', 10)
+  const minute = Number.parseInt(parts.minute ?? '0', 10)
+  const totalMinutes = hour * 60 + minute
+  const isBusinessDay = businessHours.days.has(parts.weekday)
+  const isOpen =
+    isBusinessDay &&
+    totalMinutes >= businessHours.openHour * 60 &&
+    totalMinutes < businessHours.closeHour * 60
+
+  return {
+    isOpen,
+    label: isOpen ? 'Open now' : 'Closed now',
+    time: `${parts.hour ?? '--'}:${parts.minute ?? '--'} ${parts.timeZoneName ?? 'CET'}`,
+  }
+})
+
+const statusPillClass = computed(() => [
+  'pill',
+  'pill--status',
+  amsterdamStatus.value.isOpen ? 'pill--open' : 'pill--closed',
+])
+
+const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const getSamePageHash = (href) => {
+  if (!href || !href.includes('#')) {
+    return ''
+  }
+
+  const url = new URL(href, window.location.href)
+
+  if (
+    url.origin !== window.location.origin ||
+    url.pathname !== window.location.pathname ||
+    url.search !== window.location.search
+  ) {
+    return ''
+  }
+
+  return url.hash
+}
+
+const getTargetFromHash = (hash) => {
+  if (!hash || hash === '#top') {
+    return document.documentElement
+  }
+
+  try {
+    return document.getElementById(decodeURIComponent(hash.slice(1)))
+  } catch {
+    return null
+  }
+}
+
+const updateHash = (hash, replace = false) => {
+  const nextUrl =
+    hash === '#top'
+      ? `${window.location.pathname}${window.location.search}`
+      : `${window.location.pathname}${window.location.search}${hash}`
+  const method = replace ? 'replaceState' : 'pushState'
+
+  window.history[method](null, '', nextUrl)
+}
+
+const scrollToHash = (hash, options = {}) => {
+  const target = getTargetFromHash(hash)
+
+  if (!target) {
+    return false
+  }
+
+  if (scrollFrame) {
+    cancelAnimationFrame(scrollFrame)
+  }
+
+  window.scrollTo({ top: window.scrollY, left: window.scrollX, behavior: 'auto' })
+
+  scrollFrame = requestAnimationFrame(() => {
+    const targetTop =
+      hash === '#top'
+        ? 0
+        : Math.max(0, Math.round(target.getBoundingClientRect().top + window.scrollY))
+
+    window.scrollTo({
+      top: targetTop,
+      left: 0,
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+    })
+    updateHash(hash, options.replace)
+    scrollFrame = 0
+  })
+
+  return true
+}
+
+const handlePageAnchorClick = (event) => {
+  if (
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey ||
+    !(event.target instanceof Element)
+  ) {
     return
   }
 
+  const link = event.target.closest('a[href]')
+  const hash = getSamePageHash(link?.getAttribute('href'))
+
+  if (!hash) {
+    return
+  }
+
+  if (scrollToHash(hash)) {
+    event.preventDefault()
+  }
+}
+
+const showElement = (element) => {
+  if (!element || element.dataset.revealShown === 'true') {
+    return
+  }
+
+  element.dataset.revealShown = 'true'
   const delay = Number.parseInt(element.dataset.revealDelay ?? '0', 10)
   const safeDelay = Number.isNaN(delay) ? 0 : delay
 
-  window.setTimeout(() => {
+  const timer = window.setTimeout(() => {
     element.classList.add('is-visible')
+    revealTimers.delete(timer)
   }, safeDelay)
+
+  revealTimers.add(timer)
 }
 
-onMounted(() => {
+onMounted(async () => {
+  clockTimer = window.setInterval(() => {
+    amsterdamNow.value = new Date()
+  }, 30_000)
+
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual'
   }
 
-  if (window.location.hash) {
-    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`)
-  }
-
   window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-
-  landingReady.value = true
+  document.addEventListener('click', handlePageAnchorClick)
+  await nextTick()
 
   const revealItems = Array.from(document.querySelectorAll('[data-reveal]'))
 
-  if (!revealItems.length) {
-    return
-  }
-
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (prefersReducedMotion()) {
     revealItems.forEach((element) => element.classList.add('is-visible'))
-    return
+  } else if (revealItems.length) {
+    const loadRevealItems = revealItems.filter((element) => element.dataset.revealOnLoad === 'true')
+    const scrollRevealItems = revealItems.filter((element) => element.dataset.revealOnLoad !== 'true')
+
+    loadRevealItems.forEach((element) => {
+      element.dataset.revealShown = 'true'
+      element.classList.add('is-visible')
+    })
+
+    revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return
+          }
+
+          showElement(entry.target)
+          revealObserver?.unobserve(entry.target)
+        })
+      },
+      {
+        threshold: 0.14,
+        rootMargin: '0px 0px -8% 0px',
+      },
+    )
+
+    scrollRevealItems.forEach((element) => revealObserver?.observe(element))
   }
 
-  const loadRevealItems = revealItems.filter((element) => element.dataset.revealOnLoad === 'true')
-  const scrollRevealItems = revealItems.filter((element) => element.dataset.revealOnLoad !== 'true')
+  landingReady.value = true
 
-  requestAnimationFrame(() => {
-    loadRevealItems.forEach((element) => showElement(element))
-  })
-
-  revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) {
-          return
-        }
-
-        showElement(entry.target)
-        revealObserver?.unobserve(entry.target)
-      })
-    },
-    {
-      threshold: 0.18,
-      rootMargin: '0px 0px -12% 0px',
-    },
-  )
-
-  scrollRevealItems.forEach((element) => revealObserver?.observe(element))
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  updateHash('#top', true)
 })
 
 onBeforeUnmount(() => {
+  document.removeEventListener('click', handlePageAnchorClick)
+  if (scrollFrame) {
+    cancelAnimationFrame(scrollFrame)
+  }
+  if (clockTimer) {
+    window.clearInterval(clockTimer)
+  }
+  revealTimers.forEach((timer) => window.clearTimeout(timer))
+  revealTimers.clear()
   revealObserver?.disconnect()
 })
 </script>
@@ -78,16 +241,17 @@ onBeforeUnmount(() => {
     <section class="hero">
       <div class="shell shell--full topbar">
         <div class="topbar__right" data-reveal="down" data-reveal-on-load="true">
-          <span class="pill" data-reveal="down" data-reveal-delay="40" data-reveal-on-load="true"><i />Closed now</span>
+          <span :class="statusPillClass" data-reveal="down" data-reveal-delay="40" data-reveal-on-load="true"><i />{{ amsterdamStatus.label }}</span>
+          <span class="time-chip" data-reveal="down" data-reveal-delay="65" data-reveal-on-load="true">{{ amsterdamStatus.time }}</span>
           <a href="tel:0851302368" data-reveal="down" data-reveal-delay="90" data-reveal-on-load="true">085 130 23 68</a>
           <a href="mailto:hello@webvora.com" data-reveal="down" data-reveal-delay="140" data-reveal-on-load="true">hello@webvora.com</a>
         </div>
       </div>
 
       <div class="shell shell--full nav">
-        <button class="menu" type="button" aria-label="Open menu" data-reveal="left" data-reveal-delay="60" data-reveal-on-load="true">
+        <a href="#top" class="menu" aria-label="Back to top" data-reveal="left" data-reveal-delay="60" data-reveal-on-load="true">
           <b class="menu__mark" aria-hidden="true">W</b>
-        </button>
+        </a>
         <a href="#top" class="logo" data-reveal="down" data-reveal-delay="120" data-reveal-on-load="true">
           <strong>Webvora</strong>
         </a>
@@ -161,7 +325,7 @@ onBeforeUnmount(() => {
               <a href="#contact">Schedule a call</a>
               <a href="mailto:hello@webvora.com">hello@webvora.com</a>
               <a href="tel:0851302368">085 130 23 68</a>
-              <span class="pill pill--lg"><i />Closed now</span>
+              <span :class="[statusPillClass, 'pill--lg']"><i />{{ amsterdamStatus.label }}</span>
             </div>
             <div class="mini-card__message">
               <h3>Webvora</h3>
@@ -276,18 +440,20 @@ onBeforeUnmount(() => {
 
           <article class="plan plan--tertiary" data-reveal="up" data-reveal-delay="180">
             <div class="plan__top">
-              <p class="plan__price">from $30/month <span>Maintenance and hosting</span></p>
+              <p class="plan__price">from $50/month <span>Maintenance and hosting</span></p>
             </div>
             <h3>Monthly Maintenance + Hosting</h3>
             <p class="plan__lead">
-              Ongoing support for websites and lightweight applications. Pricing can increase if
-              storage, traffic, or platform usage grows over time.
+              Ongoing support for finished websites and applications. Regular portfolio websites
+              start at $50/month, while custom web apps start at $1,500/month and scale upward as
+              the app grows in users, features, traffic, storage, or operational complexity.
             </p>
             <ul>
-              <li>Secure hosting environment</li>
+              <li>Portfolio websites from $50/month</li>
+              <li>Custom web apps from $1,500/month</li>
               <li>Routine updates and maintenance</li>
               <li>Basic uptime oversight</li>
-              <li>Monthly pricing scales with usage</li>
+              <li>Monthly pricing scales as the platform grows</li>
             </ul>
           </article>
 
@@ -311,6 +477,8 @@ onBeforeUnmount(() => {
           <div class="col">
             <h3>Opening hours</h3>
             <p>Mon - Fri 09:00 to 17:00</p>
+            <p>Timezone: Europe/Amsterdam (CET/CEST)</p>
+            <span :class="[statusPillClass, 'pill--lg']"><i />{{ amsterdamStatus.label }}</span>
           </div>
 
           <div class="col">
@@ -330,7 +498,7 @@ onBeforeUnmount(() => {
             <a href="#contact">Schedule a call</a>
             <a href="mailto:hello@webvora.com">hello@webvora.com</a>
             <a href="tel:0851302368">085 130 23 68</a>
-            <span class="pill pill--lg"><i />Closed now</span>
+            <span :class="[statusPillClass, 'pill--lg']"><i />{{ amsterdamStatus.label }}</span>
           </div>
           <span class="brand-mark brand-mark--footer" aria-hidden="true">W</span>
         </aside>
